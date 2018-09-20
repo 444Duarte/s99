@@ -72,7 +72,8 @@ trait ListsSolutions {
   def encodeModified[T](list: List[T]): List[Any] = 
     encode(list).map( x => if (x._1 == 1) x._2 else (x._1,x._2))
 
-  def decode[T](list: List[(Int, T)]): List[T] = ???
+  def decode[T](list: List[(Int, T)]): List[T] = list.foldLeft[List[T]](Nil)( (b,x) => b ::: (List.fill(x._1)(x._2)))
+
   def encodeDirect[T](list: List[T]): List[(Int, T)] = ???
   def duplicate[T](list: List[T]): List[T] = ???
   def duplicateN[T](n: Int, list: List[T]): List[T] = ???
