@@ -53,20 +53,25 @@ trait ListsSolutions {
     if(list.isEmpty) Nil
     else list.head :: aux(list.head, list.tail)
   }
+
   def pack[T](list: List[T]): List[List[T]] = {
     def aux (l: List[T], curr: List[T]): List[List[T]] = (l, curr) match {
       case (Nil,_) => List(curr)
       case (x :: xs, c :: cs) =>
         if(x == c) aux(xs, x :: curr )
         else curr :: aux(xs, List(x))
-
     }
 
     if(list.isEmpty) Nil
     else aux(list.tail, List(list.head))
   }
-  def encode[T](list: List[T]): List[(Int, T)] = ???
-  def encodeModified[T](list: List[T]): List[Any] = ???
+
+  def encode[T](list: List[T]): List[(Int, T)] = 
+    pack(list) map(x => (x.length, x.head))
+
+  def encodeModified[T](list: List[T]): List[Any] = 
+    encode(list).map( x => if (x._1 == 1) x._2 else (x._1,x._2))
+
   def decode[T](list: List[(Int, T)]): List[T] = ???
   def encodeDirect[T](list: List[T]): List[(Int, T)] = ???
   def duplicate[T](list: List[T]): List[T] = ???
