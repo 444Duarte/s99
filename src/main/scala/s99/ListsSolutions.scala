@@ -72,10 +72,27 @@ trait ListsSolutions {
   def encodeModified[T](list: List[T]): List[Any] = 
     encode(list).map( x => if (x._1 == 1) x._2 else (x._1,x._2))
 
-  def decode[T](list: List[(Int, T)]): List[T] = list.foldLeft[List[T]](Nil)( (b,x) => b ::: (List.fill(x._1)(x._2)))
+  def decode[T](list: List[(Int, T)]): List[T] = list.foldLeft[List[T]](Nil)( (b,x) => b ::: List.fill(x._1)(x._2))
 
-  def encodeDirect[T](list: List[T]): List[(Int, T)] = ???
+  def encodeDirect[T](list: List[T]): List[(Int, T)] = {
+    def aux(curr: (Int, T), l: List[T]): List[(Int, T)] = l match {
+      case Nil => curr :: Nil
+      case y :: Nil =>
+        if(y == curr._2) (curr._1 + 1, y) :: Nil
+        else List(curr, (1,y))
+      case y :: ys =>
+        if(y == curr._2) aux((curr._1 + 1, y), ys)
+        else curr :: aux((1, y),ys)
+    }
+
+    list match {
+      case Nil => Nil
+      case x :: xs => aux((1,x), xs)
+    }
+  }
+
   def duplicate[T](list: List[T]): List[T] = ???
+
   def duplicateN[T](n: Int, list: List[T]): List[T] = ???
   def drop[T](n: Int, list: List[T]): List[T] = ???
   def split[T](n: Int, list: List[T]): (List[T], List[T]) = ???
