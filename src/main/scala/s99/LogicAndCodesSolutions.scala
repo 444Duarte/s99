@@ -23,6 +23,14 @@ trait LogicAndCodesSolutions { outer =>
 
   def table2(f: (Boolean, Boolean) => Boolean): String = ???
 
-  def gray(n: Int): List[String] = ???
+  def gray(n: Int): List[String] = {
+    if (n == 1) List("0", "1")
+    else if(n == 0) Nil
+    else {
+      val prevGray = gray(n-1)
+      prevGray.foldRight[List[String]](Nil){ (n, b) =>"0" + n :: b} ::: prevGray.foldLeft[List[String]](Nil){ (b,n) =>"1" + n :: b}
+    }
+  }
+
   def huffman(list: List[(String,  Int)]): List[(String, String)] = ???
 }
