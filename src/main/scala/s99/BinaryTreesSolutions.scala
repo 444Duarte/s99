@@ -10,9 +10,9 @@ trait BinaryTreesSolutions {
     def addValue[S >: T](s: S)(implicit ev$1: S => Ordered[S]): Tree[S]
 
     def nodeCount: Int
-    def leafCount: Int = ???
-    def leafList: List[T] = ???
-    def internalList: List[T] = ???
+    def leafCount: Int
+    def leafList: List[T]
+    def internalList: List[T]
     def atLevel(n: Int): List[T] = ???
 
     def layoutBinaryTree: Tree[T] = ???
@@ -42,6 +42,18 @@ trait BinaryTreesSolutions {
       else Node(value, left.addValue(s), right)
 
     override def nodeCount: Int = 1 + left.nodeCount + right.nodeCount
+
+    override def leafCount: Int =
+      if(left == End && right == End) 1
+      else left.leafCount + right.leafCount
+
+    override def leafList: List[T] =
+      if(left == End && right == End) List(value)
+      else left.leafList ::: right.leafList
+
+    override def internalList: List[T] =
+      if(left == End && right == End) Nil
+      else value :: left.internalList ::: right.internalList
   }
 
   case object End extends Tree[Nothing] {
@@ -54,6 +66,12 @@ trait BinaryTreesSolutions {
     override def addValue[S >: Nothing](s: S)(implicit ev$1: S => Ordered[S]): Tree[S] = Node(s,End, End)
 
     override def nodeCount: Int = 0
+
+    override def leafCount: Int = 0
+
+    override def leafList: List[Nothing] = Nil
+
+    override def internalList: List[Nothing] = Nil
   }
 
   object Node {
