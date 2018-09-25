@@ -13,7 +13,7 @@ trait BinaryTreesSolutions {
     def leafCount: Int
     def leafList: List[T]
     def internalList: List[T]
-    def atLevel(n: Int): List[T] = ???
+    def atLevel(n: Int): List[T]
 
     def layoutBinaryTree: Tree[T] = ???
     def layoutBinaryTree2: Tree[T] = ???
@@ -54,6 +54,12 @@ trait BinaryTreesSolutions {
     override def internalList: List[T] =
       if(left == End && right == End) Nil
       else value :: left.internalList ::: right.internalList
+
+    override def atLevel(n: Int): List[T] = {
+      if (n == 0) Nil
+      if (n == 1) List(value)
+      else left.atLevel(n-1) :::  right.atLevel(n-1)
+    }
   }
 
   case object End extends Tree[Nothing] {
@@ -72,6 +78,8 @@ trait BinaryTreesSolutions {
     override def leafList: List[Nothing] = Nil
 
     override def internalList: List[Nothing] = Nil
+
+    override def atLevel(n: Int): List[Nothing] = Nil
   }
 
   object Node {
@@ -128,7 +136,17 @@ trait BinaryTreesSolutions {
     }
 
 
-    def completeBinaryTree[T](n: Int, e: T): Tree[T] = ???
+    def completeBinaryTree[T](n: Int, e: T): Tree[T] =
+      if (n == 0) End
+      else if ((n - 1) % 2 == 0) {
+        val left = completeBinaryTree((n - 1) / 2, e)
+        val right = completeBinaryTree((n - 1) /2, e)
+        Node(e, left, right)
+      } else {
+        val small = completeBinaryTree((n - 1) / 2, e)
+        val big = completeBinaryTree((n - 1) / 2 + 1, e)
+        Node(e, big, small)
+      }
 
     def fromString(string: String): Tree[Char] = ???
     def preInTree[T](pre: List[T], in: List[T]): Tree[T] = ???
