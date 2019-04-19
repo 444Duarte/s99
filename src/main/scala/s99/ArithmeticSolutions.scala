@@ -29,7 +29,6 @@ trait ArithmeticSolutions {
       case (p, m) => (p - 1) * math.pow(p, m - 1).toInt
     }.product
 
-    def listPrimesinRange(r: Range): List[Int] = ???
     def goldbach: (Int, Int) = {
       val f: List[(Int, Int)] =
         for {
@@ -45,12 +44,11 @@ trait ArithmeticSolutions {
 
   def gcd(m: Int, n: Int): Int = if (n == 0) m else gcd(n, m%n)
 
-  def listPrimesinRange(r: Range): List[Int] = (for ( i <- r if i.isPrime) yield i).toList
+  def listPrimesinRange(r: Range): List[Int] = r.filter(_.isPrime).toList
   def printGoldbachList(r: Range): List[String] = printGoldbachListLimited(r,0)
 
-
   def printGoldbachListLimited(r: Range, limit: Int): List[String] = r.foldRight[List[String]](Nil){ (n, acc) =>
-    if(n <= 2 || n % 2 == 0) acc
+    if(n <= 2 || n % 2 != 0) acc
     else {
       val (x, y) = n.goldbach
       if(x > limit) n + s" = $x + $y" :: acc
