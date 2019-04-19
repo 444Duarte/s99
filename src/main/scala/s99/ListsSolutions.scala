@@ -60,6 +60,7 @@ trait ListsSolutions {
       case (x :: xs, c :: cs) =>
         if(x == c) aux(xs, x :: curr )
         else curr :: aux(xs, List(x))
+      case (_,Nil) => List(curr)
     }
 
     if(list.isEmpty) Nil
@@ -89,12 +90,50 @@ trait ListsSolutions {
     }
   }
 
-  def duplicate[T](list: List[T]): List[T] = ???
+  def duplicate[T](list: List[T]): List[T] = list.flatMap(a => List(a,a))
 
-  def duplicateN[T](n: Int, list: List[T]): List[T] = ???
-  def drop[T](n: Int, list: List[T]): List[T] = ???
-  def split[T](n: Int, list: List[T]): (List[T], List[T]) = ???
-  def slice[T](i: Int, j: Int, list: List[T]): List[T] = ???
+  def duplicateN[T](n: Int, list: List[T]): List[T] = {
+    import scala.annotation.tailrec
+    @tailrec
+    def duplicateXTimes(a: T, x: Int, acc: List[T]): List[T] = {
+      if(x == 0) acc
+      else duplicateXTimes(a, x-1, a::acc)
+    }
+
+    list.flatMap(a => duplicateXTimes(a, n, Nil))
+  }
+
+  def drop[T](n: Int, list: List[T]): List[T] = {
+    def dropAux(currN: Int, currList: List[T], resultList: List[T]): List[T] = currList match {
+      case Nil => resultList
+      case x :: xs =>
+        if(currN == n) dropAux(1, xs, resultList)
+        else dropAux(currN + 1, xs, resultList :+ x)
+    }
+    dropAux(1, list, Nil)
+  }
+
+  def split[T](n: Int, list: List[T]): (List[T], List[T]) = {
+    def splitAux(currN: Int, currList: List[T], firstList: List[T]): (List[T], List[T]) = currList match {
+      case Nil => (firstList, Nil)
+      case x :: xs => 
+        if(currN == n) (firstList, x :: xs)
+        else splitAux(currN+1, xs, firstList :+ x)
+
+    }
+    splitAux(0,list, Nil)
+  }
+
+  def slice[T](i: Int, j: Int, list: List[T]): List[T] = {
+    def sliceAux(i: Int, currList: List[T], resultList: List[T]): List[T] = currList match {
+      case Nil => resultList
+      case x :: xs => 
+        if(i == j) resultList
+        else sliceAux(i+1, xs, resultList :+ x)
+    }
+    sliceAux(i, split(i, list)._2, Nil)
+  }
+
   def rotate[T](n: Int, list: List[T]): List[T] = ???
   def removeAt[T](i: Int, list: List[T]): (List[T], T) = ???
   def insertAt[T](t: T, i: Int, list: List[T]): List[T] = ???
